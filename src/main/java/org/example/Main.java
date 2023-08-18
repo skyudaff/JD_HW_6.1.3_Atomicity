@@ -16,9 +16,9 @@ public class Main {
             texts[i] = generateText("abc", 3 + random.nextInt(3));
         }
 
-        Thread threadLength3 = new Thread(() -> countBeautiful(texts, 3));
-        Thread threadLength4 = new Thread(() -> countBeautiful(texts, 4));
-        Thread threadLength5 = new Thread(() -> countBeautiful(texts, 5));
+        Thread threadLength3 = new Thread(() -> getPalindrome(texts));
+        Thread threadLength4 = new Thread(() -> getSingleChar(texts));
+        Thread threadLength5 = new Thread(() -> getAscendingOrder(texts));
 
         threadLength3.start();
         threadLength4.start();
@@ -26,7 +26,7 @@ public class Main {
 
         threadLength3.join();
         threadLength4.join();
-        threadLength3.join();
+        threadLength5.join();
 
         System.out.println("Красивых слов с длиной 3: " + countLength3 + " шт");
         System.out.println("Красивых слов с длиной 4: " + countLength4 + " шт");
@@ -34,19 +34,37 @@ public class Main {
     }
 
 
-    public static void countBeautiful(String[] nicks, int length) {
-        for (String nick : nicks) {
-            if (isBeautiful(nick, length)) {
-                switch (length) {
-                    case 3 -> countLength3.incrementAndGet();
-                    case 4 -> countLength4.incrementAndGet();
-                    case 5 -> countLength5.incrementAndGet();
-                    default -> {
-                    }
-                }
+    public static void getLength(int length) {
+        switch (length) {
+            case 3 -> countLength3.incrementAndGet();
+            case 4 -> countLength4.incrementAndGet();
+            case 5 -> countLength5.incrementAndGet();
+            default -> {
             }
         }
     }
+
+    public static void getPalindrome(String[] nicks) {
+        for (String nick : nicks) {
+            if (isPalindrome(nick))
+                getLength(nick.length());
+        }
+    }
+
+    public static void getSingleChar(String[] nicks) {
+        for (String nick : nicks) {
+            if (isSingleChar(nick))
+                getLength(nick.length());
+        }
+    }
+
+    public static void getAscendingOrder(String[] nicks) {
+        for (String nick : nicks) {
+            if (isAscendingOrder(nick))
+                getLength(nick.length());
+        }
+    }
+
 
     public static boolean isPalindrome(String nick) {
         StringBuilder sb = new StringBuilder(nick);
@@ -69,15 +87,6 @@ public class Main {
         }
         return true;
     }
-
-
-    public static boolean isBeautiful(String nick, int length) {
-        if (nick.length() != length) {
-            return false;
-        }
-        return isPalindrome(nick) || isSingleChar(nick) || isAscendingOrder(nick);
-    }
-
 
     public static String generateText(String letters, int length) {
         Random random = new Random();
